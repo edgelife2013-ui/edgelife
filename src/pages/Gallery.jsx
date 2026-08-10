@@ -136,6 +136,7 @@ export default function Gallery({ setActivePage }) {
             {/* Main Image View Container */}
             <div className="lightbox-main-img-box">
               <img
+                key={activeItem.id}
                 src={activeItem.image}
                 alt={activeItem.title}
                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}

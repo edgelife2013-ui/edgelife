@@ -253,7 +253,7 @@ export default function About({ setActivePage }) {
             </div>
             <h2 className="section-title">Manipur: Rationale & Background</h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginTop: '24px' }}>
+            <div className="about-split-grid">
               <div>
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'var(--text-dark)', marginBottom: '10px' }}>
                   Demographics, Geography & Culture
@@ -288,7 +288,7 @@ export default function About({ setActivePage }) {
             </div>
             <h2 className="section-title">Why Manipur Needs Corporate Support?</h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginTop: '24px' }}>
+            <div className="about-split-grid">
               {/* Challenges */}
               <div style={{ backgroundColor: '#FAF4F2', padding: '28px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--primary-red)' }}>
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'var(--primary-red)', marginBottom: '16px' }}>
@@ -331,7 +331,7 @@ export default function About({ setActivePage }) {
               Edge Life operates from Imphal West, Manipur, delivering healthcare and social support directly to communities and relief camps.
             </p>
 
-            <div className="about-location-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '32px', borderRadius: 'var(--radius-md)', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+            <div className="about-location-container about-location-grid-container">
               <div className="about-location-img-wrapper" style={{ overflow: 'hidden', borderRadius: 'var(--radius-sm)', border: '1px solid #EAE5D9', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px', background: '#FAF8F5' }}>
                 <img
                   src={manipurlocation}
