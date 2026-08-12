@@ -283,11 +283,7 @@ export default function Home({ setActivePage }) {
               <p className="footer-brand-desc">
                 A trust to build a value world.. Empowering communities across Manipur through healthcare, hygiene, and women livelihood programs since 2013.
               </p>
-              <div className="social-icons-row">
-                <button className="social-btn">FB</button>
-                <button className="social-btn">TW</button>
-                <button className="social-btn">IG</button>
-              </div>
+
             </div>
 
             {/* Navigate Col */}
@@ -332,7 +328,6 @@ export default function Home({ setActivePage }) {
             <div className="footer-bottom-links">
               <a href="#privacy">Privacy Policy</a>
               <a href="#terms">Terms of Use</a>
-              <a href="#80g" onClick={(e) => e.preventDefault()}>80G Certificate</a>
             </div>
           </div>
         </div>
