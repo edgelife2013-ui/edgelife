@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, ArrowRight, ArrowLeft, Heart, Smartphone, AlertCircle, Sparkles, ShieldCheck } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, Heart, Smartphone, AlertCircle, Sparkles, ShieldCheck, Building2 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 const PRESET_AMOUNTS = [500, 1000, 2500, 5000, 10000];
 
@@ -71,6 +72,21 @@ function StepIndicator({ step }) {
 
 export default function Donate({ setActivePage }) {
   const [step, setStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState('upi'); // 'upi' or 'bank'
+  const [copiedField, setCopiedField] = useState(null);
+
+  const [bankDetails, setBankDetails] = useState({
+    bankName: 'STATE BANK OF INDIA',
+    accountNumber: '34437296931',
+    ifscCode: 'SBIN0004562',
+    branchName: 'IMPHAL SECRETARIAT',
+  });
+
+  const handleCopyText = (text, fieldLabel) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(fieldLabel);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
   const [selectedAmount, setSelectedAmount] = useState(1000);
   const [customAmount, setCustomAmount] = useState('');
   const [isCustom, setIsCustom] = useState(false);
@@ -83,10 +99,12 @@ export default function Donate({ setActivePage }) {
     phone: '',
     utr: '',
     message: '',
+    _honey: '',
   });
 
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [screenshotFile, setScreenshotFile] = useState(null);
 
   const topRef = useRef(null);
 
@@ -97,12 +115,10 @@ export default function Donate({ setActivePage }) {
   }, [step]);
 
   const effectiveAmount = isCustom ? parseInt(customAmount || '0', 10) : selectedAmount;
-  const canProceed = effectiveAmount >= 100;
+  const canProceed = effectiveAmount >= 1;
 
-  const upiId = "ngoplaceholder@upi";
-  const upiPayLink = `upi://pay?pa=${upiId}&pn=NGO+Placeholder&am=${effectiveAmount}&cu=INR&tn=Donation+for+Manipur+Programs`;
-  // Dynamic QR Code generation using API
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiPayLink)}`;
+  const upiId = "9436231759@okbizaxis";
+  const upiPayLink = `upi://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`;
 
   const handleSelectPreset = (val) => {
     setSelectedAmount(val);
@@ -141,20 +157,26 @@ export default function Donate({ setActivePage }) {
     setIsSubmitting(true);
 
     try {
-      // Post to free Web3Forms / Google Sheets Web app endpoint for UTR receipt verification
-      await fetch('https://api.web3forms.com/submit', {
+      const formDataObj = new FormData();
+      formDataObj.append('name', auditForm.name);
+      formDataObj.append('email', auditForm.email);
+      formDataObj.append('phone', auditForm.phone);
+      formDataObj.append('utr', auditForm.utr);
+      formDataObj.append('amount', `₹${effectiveAmount}`);
+      formDataObj.append('purpose', 'Donation for Manipur Programs');
+      formDataObj.append('_subject', `New Donation Verification Request - ₹${effectiveAmount}`);
+      formDataObj.append('message', auditForm.message || '');
+      formDataObj.append('_honey', auditForm._honey || '');
+      formDataObj.append('_autoresponder', "Thank you for your generous donation to Edge Life. We have received your payment verification details. Please note that official stamped tax receipts or 80G certificates must be requested directly by emailing us at edgelifemanipur05@gmail.com. Thank you for building a value world with us! Edge Life");
+      
+      if (screenshotFile) {
+        formDataObj.append('attachment', screenshotFile);
+      }
+
+      // Post to FormSubmit free API for direct email forwarding to edgelifemanipur05@gmail.com
+      await fetch('https://formsubmit.co/ajax/edgelifemanipur05@gmail.com', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: 'YOUR_FREE_WEB3FORMS_ACCESS_KEY',
-          form_type: 'Donation UTR Verification Receipt Request',
-          amount: `₹${effectiveAmount}`,
-          name: auditForm.name,
-          email: auditForm.email,
-          phone: auditForm.phone,
-          utr: auditForm.utr,
-          message: auditForm.message,
-        }),
+        body: formDataObj,
       });
     } catch (err) {
       // Fallback
@@ -205,7 +227,7 @@ export default function Donate({ setActivePage }) {
                   How much would you like to give?
                 </h2>
                 <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 28px', fontSize: '0.9rem' }}>
-                  Minimum donation: ₹100. 100% of your contribution goes to active programs in Manipur.
+                  Minimum donation: ₹1. 100% of your contribution goes to active programs in Manipur.
                 </p>
 
                 {/* Presets */}
@@ -237,12 +259,19 @@ export default function Donate({ setActivePage }) {
                     <input
                       type="number"
                       value={customAmount}
-                      min={100}
+                      min={1}
                       onChange={(e) => setCustomAmount(e.target.value)}
                       placeholder="Enter custom amount"
                       className="form-input"
                       style={{ paddingLeft: '36px', fontSize: '1.2rem', fontWeight: '700', minHeight: '52px' }}
                     />
+                  </div>
+                )}
+
+                {/* Error message for invalid custom amount */}
+                {isCustom && !canProceed && (
+                  <div style={{ color: '#C83E2B', fontSize: '0.85rem', marginTop: '-12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '600' }}>
+                    <AlertCircle size={16} /> Minimum donation is ₹1
                   </div>
                 )}
 
@@ -279,62 +308,207 @@ export default function Donate({ setActivePage }) {
                 <h2 className="section-title" style={{ textAlign: 'center', fontSize: '1.8rem', marginBottom: '8px' }}>
                   Make Your Payment
                 </h2>
-                <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 28px', fontSize: '0.9rem' }}>
-                  Pay <strong>₹{effectiveAmount.toLocaleString()}</strong> via UPI — scan the dynamic QR or tap the deep link.
-                </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
-                  {/* Dynamic QR Box */}
-                  <div className="qr-box-card">
-                    <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#5A4A3A' }}>
-                      Dynamic UPI QR Code
-                    </span>
-
-                    <div className="qr-image-wrapper">
-                      <img src={qrCodeUrl} alt={`UPI QR Code for ₹${effectiveAmount}`} />
-                    </div>
-
-                    <span style={{ fontSize: '0.75rem', color: '#8A7060', marginBottom: '4px' }}>UPI ID:</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--primary-red)', backgroundColor: '#FDF0EE', padding: '4px 12px', borderRadius: '6px' }}>
-                      {upiId}
-                    </span>
-                  </div>
-
-                  {/* One-Tap UPI Deep Link */}
-                  <div
+                {/* Payment Method Switcher Tabs */}
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '24px', justifyContent: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('upi')}
                     style={{
-                      backgroundColor: '#E2F0EA',
-                      border: '2px solid #B8DCCE',
-                      borderRadius: 'var(--radius-md)',
-                      padding: '24px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      gap: '12px',
+                      padding: '10px 20px',
+                      borderRadius: '30px',
+                      fontWeight: '700',
+                      fontSize: '0.9rem',
+                      border: '2px solid #EAE2D5',
+                      backgroundColor: paymentMethod === 'upi' ? 'var(--primary-red)' : '#FFFFFF',
+                      color: paymentMethod === 'upi' ? '#FFFFFF' : '#4A443D',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: paymentMethod === 'upi' ? '0 4px 12px rgba(200,62,43,0.25)' : 'none'
                     }}
                   >
-                    <Smartphone size={42} style={{ color: 'var(--green-accent)' }} />
-                    <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816' }}>One-Tap Mobile UPI</h4>
-                    <p style={{ fontSize: '0.82rem', color: '#4A443D', lineHeight: '1.4' }}>
-                      Opens Google Pay, PhonePe, Paytm, or BHIM directly with <strong>₹{effectiveAmount}</strong> pre-filled.
-                    </p>
-
-                    <a
-                      href={upiPayLink}
-                      className="btn-green"
-                      style={{ width: '100%', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px' }}
-                    >
-                      <Smartphone size={16} /> Pay ₹{effectiveAmount.toLocaleString()} via UPI
-                    </a>
-                  </div>
+                    Pay via UPI
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('bank')}
+                    style={{
+                      padding: '10px 20px',
+                      borderRadius: '30px',
+                      fontWeight: '700',
+                      fontSize: '0.9rem',
+                      border: '2px solid #EAE2D5',
+                      backgroundColor: paymentMethod === 'bank' ? 'var(--primary-red)' : '#FFFFFF',
+                      color: paymentMethod === 'bank' ? '#FFFFFF' : '#4A443D',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: paymentMethod === 'bank' ? '0 4px 12px rgba(200,62,43,0.25)' : 'none'
+                    }}
+                  >
+                    Bank Transfer
+                  </button>
                 </div>
 
+                {paymentMethod === 'upi' ? (
+                  <>
+                    <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 28px', fontSize: '0.9rem' }}>
+                      Pay <strong>₹{effectiveAmount.toLocaleString()}</strong> via UPI — scan the dynamic QR or tap the deep link.
+                    </p>
+
+                    <div className="payment-methods-grid">
+                      {/* Dynamic QR Box */}
+                      <div className="qr-box-card">
+                        <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#5A4A3A' }}>
+                          Dynamic UPI QR Code
+                        </span>
+
+                        <div className="qr-image-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
+                          <QRCodeSVG value={upiPayLink} size={172} level="M" style={{ display: 'block' }} />
+                        </div>
+
+                        <span style={{ fontSize: '0.75rem', color: '#8A7060', marginBottom: '4px' }}>UPI ID:</span>
+                        <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--primary-red)', backgroundColor: '#FDF0EE', padding: '4px 12px', borderRadius: '6px' }}>
+                          {upiId}
+                        </span>
+                      </div>
+
+                      {/* One-Tap UPI Deep Link */}
+                      <div
+                        style={{
+                          backgroundColor: '#E2F0EA',
+                          border: '2px solid #B8DCCE',
+                          borderRadius: 'var(--radius-md)',
+                          padding: '24px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          textAlign: 'center',
+                          gap: '12px',
+                        }}
+                      >
+                        <Smartphone size={42} style={{ color: 'var(--green-accent)' }} />
+                        <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816' }}>One-Tap Mobile UPI</h4>
+                        <p style={{ fontSize: '0.82rem', color: '#4A443D', lineHeight: '1.4' }}>
+                          Opens Google Pay, PhonePe, Paytm, or BHIM directly with <strong>₹{effectiveAmount}</strong> pre-filled.
+                        </p>
+
+                        <a
+                          href={upiPayLink}
+                          className="btn-green"
+                          style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', marginBottom: '4px' }}
+                        >
+                          <Smartphone size={16} /> Pay via Default UPI App
+                        </a>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', marginTop: '4px' }}>
+                          <span style={{ fontSize: '0.72rem', color: '#5A4A3A', fontWeight: 'bold' }}>Or launch directly:</span>
+                          <div style={{ display: 'flex', gap: '8px', width: '100%', flexWrap: 'wrap' }}>
+                            <a
+                              href={`gpay://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
+                              className="app-pay-btn"
+                              style={{ flex: 1, minWidth: '80px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
+                            >
+                              Google Pay
+                            </a>
+                            <a
+                              href={`phonepe://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
+                              className="app-pay-btn"
+                              style={{ flex: 1, minWidth: '80px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
+                            >
+                              PhonePe
+                            </a>
+                            <a
+                              href={`paytmmp://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
+                              className="app-pay-btn"
+                              style={{ flex: 1, minWidth: '80px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
+                            >
+                              Paytm
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 28px', fontSize: '0.9rem' }}>
+                      Transfer <strong>₹{effectiveAmount.toLocaleString()}</strong> directly to our bank account.
+                    </p>
+
+                    <div
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        border: '2px solid #EAE2D5',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                        textAlign: 'left',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
+                      }}
+                    >
+                      <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 4px 0' }}>
+                        <Building2 size={20} style={{ color: 'var(--primary-red)' }} /> Bank Transfer Details (NEFT / IMPS / RTGS)
+                      </h4>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px', marginTop: '4px' }}>
+                        {[
+                          { label: 'Account Name', value: 'EDGE LIFE' },
+                          { label: 'Bank Name', value: bankDetails.bankName },
+                          { label: 'Account Number', value: bankDetails.accountNumber },
+                          { label: 'IFSC Code', value: bankDetails.ifscCode },
+                          { label: 'Branch Name', value: bankDetails.branchName },
+                        ].map((item, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              backgroundColor: '#FAF6EF',
+                              padding: '10px 14px',
+                              borderRadius: '8px',
+                              border: '1px solid #EAE2D5'
+                            }}
+                          >
+                            <div>
+                              <span style={{ fontSize: '0.68rem', color: '#8A7060', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                                {item.label}
+                              </span>
+                              <span style={{ fontSize: '0.9rem', fontWeight: '800', color: '#1A1816', letterSpacing: item.label.includes('Number') || item.label.includes('IFSC') ? '1px' : 'normal' }}>
+                                {item.value}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyText(item.value, item.label)}
+                              style={{
+                                backgroundColor: copiedField === item.label ? 'var(--green-accent)' : 'transparent',
+                                color: copiedField === item.label ? '#FFFFFF' : 'var(--primary-red)',
+                                border: copiedField === item.label ? 'none' : '1px solid var(--primary-red)',
+                                padding: '5px 10px',
+                                borderRadius: '4px',
+                                fontSize: '0.7rem',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease'
+                              }}
+                            >
+                              {copiedField === item.label ? 'Copied!' : 'Copy'}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 {/* UTR Notice Box */}
-                <div style={{ backgroundColor: '#FAF2E6', border: '1px solid #E5D5BC', borderRadius: '8px', padding: '12px 16px', marginBottom: '24px', textAlign: 'center' }}>
-                  <p style={{ fontSize: '0.85rem', color: '#5A4A3A' }}>
-                    💡 <strong style={{ color: 'var(--primary-red)' }}>After paying:</strong> Note down your 12-digit UTR transaction number from your UPI app history to confirm your receipt in the next step.
+                <div style={{ backgroundColor: '#FAF2E6', border: '1px solid #E5D5BC', borderRadius: '8px', padding: '12px 16px', margin: '24px 0', textAlign: 'center' }}>
+                  <p style={{ fontSize: '0.85rem', color: '#5A4A3A', margin: 0 }}>
+                    💡 <strong style={{ color: 'var(--primary-red)' }}>After paying:</strong> Note down your 12-digit UTR transaction number from your payment receipt to confirm in the next step.
                   </p>
                 </div>
 
@@ -365,11 +539,20 @@ export default function Donate({ setActivePage }) {
                   Verify Your Contribution
                 </h2>
                 <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 24px', fontSize: '0.9rem' }}>
-                  Enter your UTR transaction number so our NGO team can match and issue your <strong>80G Tax Exemption Receipt</strong> for ₹{effectiveAmount.toLocaleString()}.
+                  Enter your UTR transaction number and upload a payment screenshot to verify your donation of <strong>₹{effectiveAmount.toLocaleString()}</strong>. Contact us at edgelifemanipur05@gmail.com for receipt details.
                 </p>
 
                 <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                  {/* Honeypot Spam Protection */}
+                  <input
+                    type="text"
+                    name="_honey"
+                    style={{ display: 'none' }}
+                    value={auditForm._honey}
+                    onChange={(e) => setAuditForm({ ...auditForm, _honey: e.target.value })}
+                  />
+
+                  <div className="donate-form-grid">
                     {/* Name */}
                     <div className="form-field-group">
                       <label className="form-label">Full Name *</label>
@@ -425,6 +608,21 @@ export default function Donate({ setActivePage }) {
                       />
                       {formErrors.utr && <span style={{ fontSize: '0.75rem', color: '#C83E2B' }}>{formErrors.utr}</span>}
                     </div>
+
+                    {/* Screenshot Upload (Optional) */}
+                    <div className="form-field-group" style={{ gridColumn: 'span 2' }}>
+                      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>Upload Transaction Screenshot (Optional)</span>
+                        <span style={{ fontSize: '0.72rem', color: '#8A7060', fontWeight: 'normal' }}>JPEG, PNG up to 5MB</span>
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setScreenshotFile(e.target.files[0] || null)}
+                        className="form-input"
+                        style={{ padding: '10px 14px', fontSize: '0.85rem' }}
+                      />
+                    </div>
                   </div>
 
                   {/* Message */}
@@ -443,7 +641,7 @@ export default function Donate({ setActivePage }) {
                   <div style={{ backgroundColor: '#E2F0EA', border: '1px solid #B8DCCE', borderRadius: '6px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <ShieldCheck size={20} style={{ color: 'var(--green-accent)', flexShrink: 0 }} />
                     <span style={{ fontSize: '0.78rem', color: '#1E4620' }}>
-                      Eligible for <strong>80G Tax Deduction</strong> under Income Tax Act. Your verified receipt will be sent to your email.
+                      Donations are eligible for <strong>80G Tax Deduction</strong>. Please contact us directly at <strong>edgelifemanipur05@gmail.com</strong> to request stamped tax receipts or certificates.
                     </span>
                   </div>
 
@@ -585,8 +783,8 @@ export default function Donate({ setActivePage }) {
           <div className="footer-bottom-bar">
             <span>© 2025 Edge Life. A trust to build a value world.. All rights reserved.</span>
             <div className="footer-bottom-links">
-              <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-              <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Use</a>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#terms">Terms of Use</a>
               <a href="#80g" onClick={(e) => e.preventDefault()}>80G Certificate</a>
             </div>
           </div>

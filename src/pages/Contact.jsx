@@ -9,6 +9,7 @@ export default function Contact({ setActivePage }) {
     subject: '',
     message: '',
     agree: false,
+    _honey: '',
   });
 
   const [formStatus, setFormStatus] = useState({ submitting: false, success: false, error: '' });
@@ -26,40 +27,33 @@ export default function Contact({ setActivePage }) {
     setFormStatus({ submitting: true, success: false, error: '' });
 
     try {
-      // Free Web3Forms endpoint to send emails directly to client Gmail without backend/DB
-      const response = await fetch('https://api.web3forms.com/submit', {
+      // Post to FormSubmit free API for direct email forwarding to edgelifemanipur05@gmail.com
+      const response = await fetch('https://formsubmit.co/ajax/edgelifemanipur05@gmail.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          access_key: 'YOUR_FREE_WEB3FORMS_ACCESS_KEY', // Replace with free Web3Forms key for instant Gmail delivery
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          subject: formData.subject || 'New Contact Form Submission',
+          _subject: formData.subject || 'New Contact Form Submission',
           message: formData.message,
+          _honey: formData._honey,
+          _autoresponder: "Thank you for reaching out to Edge Life. We have received your message and our team will get back to you shortly. Edge Life · A trust to build a value world..",
         }),
       });
 
       const res = await response.json();
-      if (res.success || response.ok) {
+      if (response.ok || res.success === 'true') {
         setFormStatus({ submitting: false, success: true, error: '' });
         setFormData({ name: '', email: '', phone: '', subject: '', message: '', agree: false });
       } else {
-        // Fallback simulation for demonstration if access key isn't provided yet
-        setTimeout(() => {
-          setFormStatus({ submitting: false, success: true, error: '' });
-          setFormData({ name: '', email: '', phone: '', subject: '', message: '', agree: false });
-        }, 1000);
+        setFormStatus({ submitting: false, success: false, error: res.message || 'Something went wrong.' });
       }
     } catch (err) {
-      // Fallback graceful success simulation for frontend review
-      setTimeout(() => {
-        setFormStatus({ submitting: false, success: true, error: '' });
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '', agree: false });
-      }, 1000);
+      setFormStatus({ submitting: false, success: false, error: 'Failed to send message. Please check your connection and try again.' });
     }
   };
 
@@ -123,7 +117,7 @@ export default function Contact({ setActivePage }) {
                   <span>Phone & Contact Person</span>
                 </div>
                 <div className="contact-item-text">
-                  <p><strong>Romita Okram</strong></p>
+                  <p><strong>Okram Romita</strong></p>
                   <p>+91 9436231759</p>
                 </div>
               </div>
@@ -176,12 +170,21 @@ export default function Contact({ setActivePage }) {
               {formStatus.success ? (
                 <div style={{ backgroundColor: '#E6F4EA', color: '#1E4620', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>
                   <h4 style={{ fontWeight: '700', marginBottom: '6px' }}>Message Sent Successfully!</h4>
-                  <p style={{ fontSize: '0.88rem' }}>Thank you for reaching out. We will get back to you shortly via email.</p>
+                  <p style={{ fontSize: '0.88rem' }}>Thank you for reaching out via email.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Honeypot Spam Protection */}
+                  <input
+                    type="text"
+                    name="_honey"
+                    style={{ display: 'none' }}
+                    value={formData._honey}
+                    onChange={handleChange}
+                  />
+
                   <div className="form-field-group">
-                    <label className="form-label">Your Name</label>
+                    <label className="form-label">Your Name *</label>
                     <input
                       type="text"
                       name="name"
@@ -194,7 +197,7 @@ export default function Contact({ setActivePage }) {
                   </div>
 
                   <div className="form-field-group">
-                    <label className="form-label">Your Email</label>
+                    <label className="form-label">Your Email *</label>
                     <input
                       type="email"
                       name="email"
@@ -231,7 +234,7 @@ export default function Contact({ setActivePage }) {
                   </div>
 
                   <div className="form-field-group">
-                    <label className="form-label">Message</label>
+                    <label className="form-label">Message *</label>
                     <textarea
                       name="message"
                       required
@@ -250,7 +253,7 @@ export default function Contact({ setActivePage }) {
                       checked={formData.agree}
                       onChange={handleChange}
                     />
-                    <span>I agree to the privacy policy and to receive updates from Edge Life.</span>
+                    <span>I agree to the privacy policy of Edge Life. *</span>
                   </label>
 
                   <button
@@ -263,7 +266,7 @@ export default function Contact({ setActivePage }) {
                   </button>
 
                   <p style={{ fontSize: '0.72rem', color: '#989087', textAlign: 'center', marginTop: '4px' }}>
-                    Powered by Web3Forms. Your message is secure and private.
+                    Powered by FormSubmit. Your message is secure and private.
                   </p>
                 </form>
               )}
@@ -331,8 +334,8 @@ export default function Contact({ setActivePage }) {
           <div className="footer-bottom-bar">
             <span>© 2025 Edge Life. A trust to build a value world.. All rights reserved.</span>
             <div className="footer-bottom-links">
-              <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-              <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Use</a>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#terms">Terms of Use</a>
               <a href="#80g" onClick={(e) => e.preventDefault()}>80G Certificate</a>
             </div>
           </div>

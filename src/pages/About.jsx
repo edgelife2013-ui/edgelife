@@ -8,19 +8,19 @@ import manipurlocation from '../assets/About/manipurlocation.png';
 export default function About({ setActivePage }) {
   const teamMembers = [
     {
-      name: 'Romita Okram',
+      name: 'Okram Romita',
       role: 'Founder',
       bio: 'Founded Edge Life in 2013, inspired by the touching sight of nurses sleeping on the floor due to financial hardships. Dedicated to reviving social values, healthcare, and women empowerment.',
       image: founder,
     },
     {
-      name: 'President',
+      name: 'Okram Mangi Singh',
       role: 'President',
       bio: 'Leads strategic planning, education, healthcare initiatives, and community relief operations across Manipur.',
       image: president,
     },
     {
-      name: 'Treasurer',
+      name: 'Okram Romen Singh',
       role: 'Treasurer',
       bio: 'Manages financial strategy, budgeting, transparency, and resource allocation for all trust programs.',
       image: treasurer,
@@ -463,8 +463,8 @@ export default function About({ setActivePage }) {
           <div className="footer-bottom-bar">
             <span>© 2025 Edge Life. A trust to build a value world.. All rights reserved.</span>
             <div className="footer-bottom-links">
-              <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-              <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Use</a>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#terms">Terms of Use</a>
               <a href="#80g" onClick={(e) => e.preventDefault()}>80G Certificate</a>
             </div>
           </div>

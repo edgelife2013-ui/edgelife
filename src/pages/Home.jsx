@@ -42,11 +42,11 @@ export default function Home({ setActivePage }) {
           <div className="about-grid">
             {/* Left Image Composite */}
             <div className="about-image-composite">
-              <div className="about-main-img-box">
+              <div className="about-main-img-box" style={{ border: '7px solid var(--bg-cream)', borderRadius: '15px', overflow: 'hidden' }}>
                 <img
                   src={about2}
                   alt="Childrens"
-                  style={{ width: '100%', height: '100%', objectFit: 'fill', objectPosition: 'center', display: 'block', borderRadius: '15px', border: '7px solid var(--bg-cream)' }}
+                  style={{ width: '103%', height: '100%', marginLeft: '-3%', objectFit: 'fill', objectPosition: 'center', display: 'block' }}
                 />
               </div>
 
@@ -61,7 +61,7 @@ export default function Home({ setActivePage }) {
                 <img
                   src={about1}
                   alt="Edge Life Community Work"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', borderRadius: '10px', border: '2px solid var(--bg-cream)' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#ffffff', objectPosition: 'center', display: 'block', borderRadius: '10px', border: '2px solid var(--bg-cream)' }}
                 />
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function Home({ setActivePage }) {
 
               <div className="about-paragraphs">
                 <p>
-                  Founded in 2013 by Romita Okram, Edge Life was inspired by the touching sight of nurses sleeping on the floor due to financial hardships. This ignited our mission to promote social and economic sustainability and revive fading social values across Manipur.
+                  Founded in 2013 by Okram Romita, Edge Life was inspired by the touching sight of nurses sleeping on the floor due to financial hardships. This ignited our mission to promote social and economic sustainability and revive fading social values across Manipur.
                 </p>
                 <p>
                   We assist destitute elderly and children with food and clothing, empower women through handloom handicrafts, and run mobile medical camps & the Edge Life Healthcare Institute.
@@ -330,8 +330,8 @@ export default function Home({ setActivePage }) {
           <div className="footer-bottom-bar">
             <span>© 2025 Edge Life. A trust to build a value world.. All rights reserved.</span>
             <div className="footer-bottom-links">
-              <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-              <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Use</a>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#terms">Terms of Use</a>
               <a href="#80g" onClick={(e) => e.preventDefault()}>80G Certificate</a>
             </div>
           </div>
