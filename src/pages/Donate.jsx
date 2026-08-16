@@ -698,7 +698,7 @@ export default function Donate({ setActivePage }) {
                         <span>Upload Transaction Screenshot (Optional)</span>
                         <span style={{ fontSize: '0.72rem', color: '#8A7060', fontWeight: 'normal' }}>JPEG, PNG up to 5MB</span>
                       </label>
-                      
+
                       <input
                         type="file"
                         id="payment-screenshot-input"
