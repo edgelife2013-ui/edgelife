@@ -166,7 +166,7 @@ export default function Donate({ setActivePage }) {
       formDataObj.append('purpose', 'Donation for Manipur Programs');
       formDataObj.append('_honey', auditForm._honey || '');
       formDataObj.append('_autoresponder', "Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life");
-      
+
       if (screenshotFile) {
         formDataObj.append('attachment', screenshotFile);
       }
