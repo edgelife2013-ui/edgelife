@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, ArrowRight, ArrowLeft, Heart, Smartphone, AlertCircle, Sparkles, ShieldCheck, Building2 } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, Heart, Smartphone, AlertCircle, Sparkles, ShieldCheck, Building2, Copy, UploadCloud, CheckCircle2, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const PRESET_AMOUNTS = [500, 1000, 2500, 5000, 10000];
@@ -349,8 +349,8 @@ export default function Donate({ setActivePage }) {
 
                 {paymentMethod === 'upi' ? (
                   <>
-                    <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 28px', fontSize: '0.9rem' }}>
-                      Pay <strong>₹{effectiveAmount.toLocaleString()}</strong> via UPI — scan the dynamic QR or tap the deep link.
+                    <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 24px', fontSize: '0.9rem' }}>
+                      Pay <strong>₹{effectiveAmount.toLocaleString()}</strong> via UPI — scan the dynamic QR, tap to launch UPI app, or copy our official UPI ID.
                     </p>
 
                     <div className="payment-methods-grid">
@@ -364,13 +364,34 @@ export default function Donate({ setActivePage }) {
                           <QRCodeSVG value={upiPayLink} size={172} level="M" style={{ display: 'block' }} />
                         </div>
 
-                        <span style={{ fontSize: '0.75rem', color: '#8A7060', marginBottom: '4px' }}>UPI ID:</span>
-                        <span style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--primary-red)', backgroundColor: '#FDF0EE', padding: '4px 12px', borderRadius: '6px' }}>
-                          {upiId}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                          <span style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--primary-red)', backgroundColor: '#FDF0EE', padding: '5px 10px', borderRadius: '6px', letterSpacing: '0.5px' }}>
+                            {upiId}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleCopyText(upiId, 'upi')}
+                            style={{
+                              backgroundColor: copiedField === 'upi' ? 'var(--green-accent)' : '#FAF6EF',
+                              color: copiedField === 'upi' ? '#FFFFFF' : '#1A1816',
+                              border: '1px solid #D4C4B0',
+                              padding: '5px 10px',
+                              borderRadius: '6px',
+                              fontSize: '0.75rem',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            {copiedField === 'upi' ? <><Check size={13} /> Copied!</> : <><Copy size={13} /> Copy ID</>}
+                          </button>
+                        </div>
                       </div>
 
-                      {/* One-Tap UPI Deep Link */}
+                      {/* One-Tap UPI Deep Link & Manual Pay */}
                       <div
                         style={{
                           backgroundColor: '#E2F0EA',
@@ -385,45 +406,83 @@ export default function Donate({ setActivePage }) {
                           gap: '12px',
                         }}
                       >
-                        <Smartphone size={42} style={{ color: 'var(--green-accent)' }} />
-                        <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816' }}>One-Tap Mobile UPI</h4>
-                        <p style={{ fontSize: '0.82rem', color: '#4A443D', lineHeight: '1.4' }}>
-                          Opens Google Pay, PhonePe, Paytm, or BHIM directly with <strong>₹{effectiveAmount}</strong> pre-filled.
+                        <Smartphone size={38} style={{ color: 'var(--green-accent)' }} />
+                        <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816', margin: 0 }}>Pay on Mobile</h4>
+                        <p style={{ fontSize: '0.82rem', color: '#4A443D', lineHeight: '1.4', margin: 0 }}>
+                          Opens your installed UPI app (GPay, PhonePe, Paytm, BHIM) with <strong>₹{effectiveAmount}</strong> pre-filled.
                         </p>
 
                         <a
                           href={upiPayLink}
                           className="btn-green"
-                          style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', marginBottom: '4px' }}
+                          style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', borderRadius: '8px', textDecoration: 'none' }}
                         >
-                          <Smartphone size={16} /> Pay via Default UPI App
+                          <Smartphone size={16} /> Pay via Installed UPI App
                         </a>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', marginTop: '4px' }}>
-                          <span style={{ fontSize: '0.72rem', color: '#5A4A3A', fontWeight: 'bold' }}>Or launch directly:</span>
-                          <div style={{ display: 'flex', gap: '8px', width: '100%', flexWrap: 'wrap' }}>
+                        {/* Direct App Launchers */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', marginTop: '2px' }}>
+                          <span style={{ fontSize: '0.72rem', color: '#5A4A3A', fontWeight: 'bold' }}>Or launch your preferred app:</span>
+                          <div style={{ display: 'flex', gap: '6px', width: '100%', flexWrap: 'wrap' }}>
                             <a
                               href={`gpay://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
                               className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '80px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
+                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
                             >
                               Google Pay
                             </a>
                             <a
-                              href={`phonepe://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
+                              href={`phonepe://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
                               className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '80px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
+                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
                             >
                               PhonePe
                             </a>
                             <a
-                              href={`paytmmp://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
+                              href={`paytmmp://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
                               className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '80px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}
+                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
                             >
                               Paytm
                             </a>
+                            <a
+                              href={`bhim://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
+                              className="app-pay-btn"
+                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
+                            >
+                              BHIM
+                            </a>
                           </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleCopyText(upiId, 'upi-btn')}
+                          style={{
+                            width: '100%',
+                            backgroundColor: copiedField === 'upi-btn' ? 'var(--green-accent)' : '#FFFFFF',
+                            color: copiedField === 'upi-btn' ? '#FFFFFF' : 'var(--text-dark)',
+                            border: '1px solid #B8DCCE',
+                            padding: '10px 14px',
+                            borderRadius: '8px',
+                            fontSize: '0.8rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            transition: 'all 0.2s ease',
+                            marginTop: '2px'
+                          }}
+                        >
+                          {copiedField === 'upi-btn' ? <><Check size={14} /> UPI ID Copied to Clipboard!</> : <><Copy size={14} /> Copy UPI ID: {upiId}</>}
+                        </button>
+
+                        <div style={{ backgroundColor: '#FAF6EF', border: '1px solid #EAE2D5', borderRadius: '6px', padding: '8px 10px', width: '100%', boxSizing: 'border-box' }}>
+                          <span style={{ fontSize: '0.72rem', color: '#5A4A3A', lineHeight: '1.35', display: 'block' }}>
+                            💡 <strong>Tip for iPhone users:</strong> If direct app links are blocked by your browser's security settings, tap <strong>Copy UPI ID</strong> above and paste directly in your UPI app.
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -608,28 +667,57 @@ export default function Donate({ setActivePage }) {
                     </div>
 
                     {/* Screenshot Upload (Optional) */}
-                    <div className="form-field-group" style={{ gridColumn: 'span 2' }}>
-                      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="form-field-group form-span-full">
+                      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                         <span>Upload Transaction Screenshot (Optional)</span>
                         <span style={{ fontSize: '0.72rem', color: '#8A7060', fontWeight: 'normal' }}>JPEG, PNG up to 5MB</span>
                       </label>
+                      
                       <input
                         type="file"
+                        id="payment-screenshot-input"
                         accept="image/*"
+                        style={{ display: 'none' }}
                         onChange={(e) => setScreenshotFile(e.target.files[0] || null)}
-                        className="form-input"
-                        style={{ padding: '10px 14px', fontSize: '0.85rem' }}
                       />
+                      <label htmlFor="payment-screenshot-input" className="screenshot-dropzone">
+                        {screenshotFile ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1E4620', fontSize: '0.82rem', fontWeight: '600' }}>
+                            <CheckCircle2 size={20} color="#2E6B4F" style={{ flexShrink: 0 }} />
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '240px' }}>
+                              {screenshotFile.name}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setScreenshotFile(null);
+                              }}
+                              style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#C83E2B', fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline', fontWeight: 'bold' }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', color: '#5A4A3A', cursor: 'pointer', padding: '4px 0' }}>
+                            <UploadCloud size={22} style={{ color: 'var(--primary-red)', flexShrink: 0 }} />
+                            <div style={{ textAlign: 'left' }}>
+                              <span style={{ fontSize: '0.82rem', fontWeight: '700', display: 'block', color: '#1A1816' }}>Tap to select payment screenshot</span>
+                              <span style={{ fontSize: '0.7rem', color: '#8A7060' }}>Helps our team match your donation instantly</span>
+                            </div>
+                          </div>
+                        )}
+                      </label>
                     </div>
                   </div>
 
                   {/* Message */}
-                  <div className="form-field-group">
+                  <div className="form-field-group form-span-full">
                     <label className="form-label">Message (Optional)</label>
                     <textarea
                       placeholder="A note for our NGO team — dedications, feedback, or greetings!"
                       className="form-textarea"
-                      style={{ minHeight: '80px' }}
+                      style={{ minHeight: '70px' }}
                       value={auditForm.message}
                       onChange={(e) => setAuditForm({ ...auditForm, message: e.target.value })}
                     ></textarea>
@@ -669,33 +757,36 @@ export default function Donate({ setActivePage }) {
             {/* STEP 4: SUCCESS CELEBRATION & ON-SCREEN RECEIPT */}
             {step === 4 && (
               <div style={{ textAlign: 'center', padding: '10px 0' }}>
-                <div
-                  style={{
-                    width: '72px',
-                    height: '72px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--green-accent)',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 16px',
-                    boxShadow: '0 8px 24px rgba(46, 107, 79, 0.25)',
-                  }}
-                >
-                  <Sparkles size={36} />
+                <div className="no-print">
+                  <div
+                    style={{
+                      width: '72px',
+                      height: '72px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--green-accent)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 16px',
+                      boxShadow: '0 8px 24px rgba(46, 107, 79, 0.25)',
+                    }}
+                  >
+                    <Sparkles size={36} />
+                  </div>
+
+                  <h2 className="section-title" style={{ fontSize: '2.2rem', marginBottom: '8px' }}>
+                    Thank You, Truly!
+                  </h2>
+
+                  <p style={{ fontSize: '1.05rem', color: '#4A443D', maxWidth: '480px', margin: '0 auto 20px', lineHeight: '1.5' }}>
+                    Your contribution of <strong style={{ color: 'var(--primary-red)' }}>₹{effectiveAmount.toLocaleString()}</strong> has been submitted to support community programs in Manipur.
+                  </p>
                 </div>
-
-                <h2 className="section-title" style={{ fontSize: '2.2rem', marginBottom: '8px' }}>
-                  Thank You, Truly!
-                </h2>
-
-                <p style={{ fontSize: '1.05rem', color: '#4A443D', maxWidth: '480px', margin: '0 auto 20px', lineHeight: '1.5' }}>
-                  Your contribution of <strong style={{ color: 'var(--primary-red)' }}>₹{effectiveAmount.toLocaleString()}</strong> has been submitted to support community programs in Manipur.
-                </p>
 
                 {/* On-Screen Receipt Card */}
                 <div
+                  className="receipt-print-card"
                   style={{
                     backgroundColor: '#FAF6EF',
                     border: '1px solid #EAE2D5',
@@ -708,10 +799,13 @@ export default function Donate({ setActivePage }) {
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #EAE2D5', paddingBottom: '10px', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#8A7060' }}>
-                      Submission Confirmation
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: '#2E6B4F', fontWeight: 'bold', backgroundColor: '#E2F0EA', padding: '2px 8px', borderRadius: '4px' }}>
+                    <div>
+                      <span style={{ fontSize: '0.75rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#8A7060', display: 'block' }}>
+                        Submission Confirmation
+                      </span>
+                      <span style={{ fontSize: '0.7rem', color: '#8A7060' }}>Edge Life (Regd. Public Trust)</span>
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: '#2E6B4F', fontWeight: 'bold', backgroundColor: '#E2F0EA', padding: '3px 8px', borderRadius: '4px' }}>
                       Received
                     </span>
                   </div>
@@ -742,7 +836,7 @@ export default function Donate({ setActivePage }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <div className="no-print" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <button
                     type="button"
                     className="btn-outline-gold"

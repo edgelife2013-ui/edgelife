@@ -2908,7 +2908,30 @@ button {
 .donate-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
+  width: 100%;
+}
+
+.donate-form-grid .form-span-full {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.screenshot-dropzone {
+  display: block;
+  width: 100%;
+  border: 2px dashed #D4C4B0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background-color: #FAF6EF;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.screenshot-dropzone:hover {
+  border-color: var(--primary-red);
+  background-color: #FFFDF9;
 }
 
 @media (max-width: 640px) {
@@ -2919,5 +2942,51 @@ button {
   .donate-form-grid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+  .donate-form-grid .form-span-full {
+    grid-column: 1;
+  }
+}
+
+/* Dedicated Print Stylesheet for Donation Confirmation Receipt */
+@media print {
+  body, html {
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  body * {
+    visibility: hidden !important;
+  }
+  
+  .receipt-print-card,
+  .receipt-print-card * {
+    visibility: visible !important;
+  }
+  
+  .receipt-print-card {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 auto !important;
+    width: 90% !important;
+    max-width: 480px !important;
+    padding: 24px 28px !important;
+    background: #FFFFFF !important;
+    color: #1A1816 !important;
+    border: 2px solid #1A1816 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+  }
+  
+  .no-print,
+  .navbar,
+  .site-footer,
+  .hero-wrapper,
+  .step-indicator-wrapper {
+    display: none !important;
+    visibility: hidden !important;
   }
 }
