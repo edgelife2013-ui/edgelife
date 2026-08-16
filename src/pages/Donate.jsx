@@ -98,7 +98,7 @@ export default function Donate({ setActivePage }) {
     email: '',
     phone: '',
     utr: '',
-    message: '',
+    message: 'Donation for Edge Life',
     _honey: '',
   });
 
@@ -118,7 +118,7 @@ export default function Donate({ setActivePage }) {
   const canProceed = effectiveAmount >= 1;
 
   const upiId = "9436231759@okbizaxis";
-  const upiPayLink = `upi://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`;
+  const upiPayLink = `upi://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Edge%20Life`;
 
   const handleSelectPreset = (val) => {
     setSelectedAmount(val);
@@ -163,7 +163,7 @@ export default function Donate({ setActivePage }) {
       formDataObj.append('phone', auditForm.phone);
       formDataObj.append('utr', auditForm.utr);
       formDataObj.append('amount', `₹${effectiveAmount}`);
-      formDataObj.append('purpose', 'Donation for Manipur Programs');
+      formDataObj.append('purpose', 'Donation for Edge Life');
       formDataObj.append('_honey', auditForm._honey || '');
       formDataObj.append('_autoresponder', "Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life");
 
@@ -350,18 +350,27 @@ export default function Donate({ setActivePage }) {
                 {paymentMethod === 'upi' ? (
                   <>
                     <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto 24px', fontSize: '0.9rem' }}>
-                      Pay <strong>₹{effectiveAmount.toLocaleString()}</strong> via UPI — scan the dynamic QR, tap to launch UPI app, or copy our official UPI ID.
+                      Pay <strong>₹{effectiveAmount.toLocaleString()}</strong> via UPI — scan the dynamic QR or copy the official UPI ID to pay in your UPI app.
                     </p>
 
                     <div className="payment-methods-grid">
                       {/* Dynamic QR Box */}
                       <div className="qr-box-card">
                         <span style={{ fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#5A4A3A' }}>
-                          Dynamic UPI QR Code
+                          Scan QR with Any UPI App
                         </span>
 
                         <div className="qr-image-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF' }}>
                           <QRCodeSVG value={upiPayLink} size={172} level="M" style={{ display: 'block' }} />
+                        </div>
+
+                        <div style={{ textAlign: 'center', margin: '2px 0 6px 0' }}>
+                          <span style={{ fontSize: '0.75rem', color: '#8A7060', display: 'block' }}>
+                            Amount: <strong style={{ color: 'var(--primary-red)' }}>₹{effectiveAmount.toLocaleString()}</strong>
+                          </span>
+                          <span style={{ fontSize: '0.72rem', color: '#8A7060', display: 'block', marginTop: '2px' }}>
+                            Note: <strong>Donation for Edge Life</strong>
+                          </span>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -370,10 +379,10 @@ export default function Donate({ setActivePage }) {
                           </span>
                           <button
                             type="button"
-                            onClick={() => handleCopyText(upiId, 'upi')}
+                            onClick={() => handleCopyText(upiId, 'upi-qr')}
                             style={{
-                              backgroundColor: copiedField === 'upi' ? 'var(--green-accent)' : '#FAF6EF',
-                              color: copiedField === 'upi' ? '#FFFFFF' : '#1A1816',
+                              backgroundColor: copiedField === 'upi-qr' ? 'var(--green-accent)' : '#FAF6EF',
+                              color: copiedField === 'upi-qr' ? '#FFFFFF' : '#1A1816',
                               border: '1px solid #D4C4B0',
                               padding: '5px 10px',
                               borderRadius: '6px',
@@ -386,103 +395,120 @@ export default function Donate({ setActivePage }) {
                               transition: 'all 0.2s ease'
                             }}
                           >
-                            {copiedField === 'upi' ? <><Check size={13} /> Copied!</> : <><Copy size={13} /> Copy ID</>}
+                            {copiedField === 'upi-qr' ? <><Check size={13} /> Copied!</> : <><Copy size={13} /> Copy ID</>}
                           </button>
                         </div>
                       </div>
 
-                      {/* One-Tap UPI Deep Link & Manual Pay */}
+                      {/* 3-Step UPI Payment Card */}
                       <div
                         style={{
-                          backgroundColor: '#E2F0EA',
-                          border: '2px solid #B8DCCE',
+                          backgroundColor: '#FFFFFF',
+                          border: '2px solid #EAE2D5',
                           borderRadius: 'var(--radius-md)',
                           padding: '24px',
                           display: 'flex',
                           flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          textAlign: 'center',
-                          gap: '12px',
+                          textAlign: 'left',
+                          gap: '14px',
+                          boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
                         }}
                       >
-                        <Smartphone size={38} style={{ color: 'var(--green-accent)' }} />
-                        <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816', margin: 0 }}>Pay on Mobile</h4>
-                        <p style={{ fontSize: '0.82rem', color: '#4A443D', lineHeight: '1.4', margin: 0 }}>
-                          Opens your installed UPI app (GPay, PhonePe, Paytm, BHIM) with <strong>₹{effectiveAmount}</strong> pre-filled.
-                        </p>
-
-                        <a
-                          href={upiPayLink}
-                          className="btn-green"
-                          style={{ width: '100%', alignSelf: 'stretch', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', borderRadius: '8px', textDecoration: 'none' }}
-                        >
-                          <Smartphone size={16} /> Pay via Installed UPI App
-                        </a>
-
-                        {/* Direct App Launchers */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', marginTop: '2px' }}>
-                          <span style={{ fontSize: '0.72rem', color: '#5A4A3A', fontWeight: 'bold' }}>Or launch your preferred app:</span>
-                          <div style={{ display: 'flex', gap: '6px', width: '100%', flexWrap: 'wrap' }}>
-                            <a
-                              href={`gpay://upi/pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
-                              className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
-                            >
-                              Google Pay
-                            </a>
-                            <a
-                              href={`phonepe://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
-                              className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
-                            >
-                              PhonePe
-                            </a>
-                            <a
-                              href={`paytmmp://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
-                              className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
-                            >
-                              Paytm
-                            </a>
-                            <a
-                              href={`bhim://pay?pa=${upiId}&pn=EDGE%20LIFE&am=${effectiveAmount}&cu=INR&tn=Donation%20for%20Manipur%20Programs`}
-                              className="app-pay-btn"
-                              style={{ flex: 1, minWidth: '70px', backgroundColor: '#FFFFFF', border: '1px solid #B8DCCE', padding: '8px 4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '700', color: '#1E4620', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', textDecoration: 'none' }}
-                            >
-                              BHIM
-                            </a>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid #EAE2D5', paddingBottom: '12px' }}>
+                          <Smartphone size={26} style={{ color: 'var(--primary-red)' }} />
+                          <div>
+                            <h4 style={{ fontWeight: '700', fontSize: '1.05rem', color: '#1A1816', margin: 0 }}>Pay with Any UPI App</h4>
+                            <p style={{ fontSize: '0.78rem', color: '#8A7060', margin: 0 }}>Google Pay · PhonePe · Paytm · BHIM</p>
                           </div>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => handleCopyText(upiId, 'upi-btn')}
-                          style={{
-                            width: '100%',
-                            backgroundColor: copiedField === 'upi-btn' ? 'var(--green-accent)' : '#FFFFFF',
-                            color: copiedField === 'upi-btn' ? '#FFFFFF' : 'var(--text-dark)',
-                            border: '1px solid #B8DCCE',
-                            padding: '10px 14px',
-                            borderRadius: '8px',
-                            fontSize: '0.8rem',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '6px',
-                            transition: 'all 0.2s ease',
-                            marginTop: '2px'
-                          }}
-                        >
-                          {copiedField === 'upi-btn' ? <><Check size={14} /> UPI ID Copied to Clipboard!</> : <><Copy size={14} /> Copy UPI ID: {upiId}</>}
-                        </button>
+                        {/* Step 1: Copy UPI ID */}
+                        <div style={{ backgroundColor: '#FAF6EF', padding: '12px 14px', borderRadius: '8px', border: '1px solid #EAE2D5' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: '800', color: '#8A7060', textTransform: 'uppercase' }}>
+                              Step 1: Copy Official UPI ID
+                            </span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--primary-red)', fontWeight: 'bold' }}>EDGE LIFE</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.95rem', fontWeight: '800', color: '#1A1816', letterSpacing: '0.5px' }}>
+                              {upiId}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyText(upiId, 'upi-box')}
+                              style={{
+                                backgroundColor: copiedField === 'upi-box' ? 'var(--green-accent)' : 'var(--primary-red)',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                padding: '8px 14px',
+                                borderRadius: '6px',
+                                fontSize: '0.8rem',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                transition: 'all 0.2s ease'
+                              }}
+                            >
+                              {copiedField === 'upi-box' ? <><Check size={14} /> Copied!</> : <><Copy size={14} /> Copy UPI ID</>}
+                            </button>
+                          </div>
+                        </div>
 
-                        <div style={{ backgroundColor: '#FAF6EF', border: '1px solid #EAE2D5', borderRadius: '6px', padding: '8px 10px', width: '100%', boxSizing: 'border-box' }}>
-                          <span style={{ fontSize: '0.72rem', color: '#5A4A3A', lineHeight: '1.35', display: 'block' }}>
-                            💡 <strong>Tip for iPhone users:</strong> If direct app links are blocked by your browser's security settings, tap <strong>Copy UPI ID</strong> above and paste directly in your UPI app.
-                          </span>
+                        {/* Step 2 & 3: Amount & Note */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                          <div style={{ backgroundColor: '#FAF6EF', padding: '10px 12px', borderRadius: '8px', border: '1px solid #EAE2D5' }}>
+                            <span style={{ fontSize: '0.68rem', fontWeight: 'bold', color: '#8A7060', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                              Step 2: Enter Amount
+                            </span>
+                            <span style={{ fontSize: '1.05rem', fontWeight: '800', color: 'var(--primary-red)' }}>
+                              ₹{effectiveAmount.toLocaleString()}
+                            </span>
+                          </div>
+                          <div style={{ backgroundColor: '#FAF6EF', padding: '10px 12px', borderRadius: '8px', border: '1px solid #EAE2D5' }}>
+                            <span style={{ fontSize: '0.68rem', fontWeight: 'bold', color: '#8A7060', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
+                              Step 3: Add Note
+                            </span>
+                            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#1A1816' }}>
+                              Donation for Edge Life
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Step 4: Simple Guide */}
+                        <div style={{ backgroundColor: '#E2F0EA', border: '1px solid #B8DCCE', borderRadius: '8px', padding: '12px 14px' }}>
+                          <p style={{ fontSize: '0.78rem', color: '#1E4620', margin: '0 0 8px 0', lineHeight: '1.45' }}>
+                            📱 <strong>How to pay on your phone:</strong><br />
+                            1. Open your UPI app (GPay / PhonePe / Paytm / BHIM)<br />
+                            2. Tap <strong>"Pay UPI ID"</strong> → paste <strong>{upiId}</strong><br />
+                            3. Enter <strong>₹{effectiveAmount}</strong> with note <em>"Donation for Edge Life"</em> and note your 12-digit UTR.
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => handleCopyText(upiId, 'upi-btn-bottom')}
+                            style={{
+                              width: '100%',
+                              backgroundColor: copiedField === 'upi-btn-bottom' ? 'var(--green-accent)' : '#2E6B4F',
+                              color: '#FFFFFF',
+                              border: 'none',
+                              padding: '10px 14px',
+                              borderRadius: '6px',
+                              fontSize: '0.8rem',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              transition: 'all 0.2s ease',
+                              marginTop: '2px'
+                            }}
+                          >
+                            {copiedField === 'upi-btn-bottom' ? <><Check size={14} /> UPI ID Copied! Open your UPI App</> : <><Copy size={14} /> Copy UPI ID to Clipboard</>}
+                          </button>
                         </div>
                       </div>
                     </div>
