@@ -164,10 +164,8 @@ export default function Donate({ setActivePage }) {
       formDataObj.append('utr', auditForm.utr);
       formDataObj.append('amount', `₹${effectiveAmount}`);
       formDataObj.append('purpose', 'Donation for Manipur Programs');
-      formDataObj.append('_subject', `New Donation Verification Request - ₹${effectiveAmount}`);
-      formDataObj.append('message', auditForm.message || '');
       formDataObj.append('_honey', auditForm._honey || '');
-      formDataObj.append('_autoresponder', "Thank you for your generous donation to Edge Life. We have received your payment verification details. Please note that official stamped tax receipts or 80G certificates must be requested directly by emailing us at edgelifemanipur05@gmail.com. Thank you for building a value world with us! Edge Life");
+      formDataObj.append('_autoresponder', "Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life");
       
       if (screenshotFile) {
         formDataObj.append('attachment', screenshotFile);
@@ -637,11 +635,11 @@ export default function Donate({ setActivePage }) {
                     ></textarea>
                   </div>
 
-                  {/* 80G Tax Exemption Notice */}
-                  <div style={{ backgroundColor: '#E2F0EA', border: '1px solid #B8DCCE', borderRadius: '6px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <ShieldCheck size={20} style={{ color: 'var(--green-accent)', flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.78rem', color: '#1E4620' }}>
-                      Donations are eligible for <strong>80G Tax Deduction</strong>. Please contact us directly at <strong>edgelifemanipur05@gmail.com</strong> to request stamped tax receipts or certificates.
+                  {/* Tax / Receipt Notice */}
+                  <div style={{ backgroundColor: '#FAF6EF', border: '1px solid #EAE2D5', borderRadius: '8px', padding: '12px 14px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <ShieldCheck size={20} style={{ color: 'var(--primary-red)', flexShrink: 0, marginTop: '2px' }} />
+                    <span style={{ fontSize: '0.78rem', color: '#5A4A3A', lineHeight: '1.45' }}>
+                      <strong>Tax Receipt Notice:</strong> Edge Life is a registered public trust. If you require a formal tax receipt for your contribution, please contact the NGO directly with your transaction details at <strong>edgelifemanipur05@gmail.com</strong> or <strong>+91 9436231759</strong>.
                     </span>
                   </div>
 
@@ -668,44 +666,96 @@ export default function Donate({ setActivePage }) {
               </div>
             )}
 
-            {/* STEP 4: SUCCESS CELEBRATION */}
+            {/* STEP 4: SUCCESS CELEBRATION & ON-SCREEN RECEIPT */}
             {step === 4 && (
-              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+              <div style={{ textAlign: 'center', padding: '10px 0' }}>
                 <div
                   style={{
-                    width: '80px',
-                    height: '80px',
+                    width: '72px',
+                    height: '72px',
                     borderRadius: '50%',
                     backgroundColor: 'var(--green-accent)',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    margin: '0 auto 20px',
-                    boxShadow: '0 8px 24px rgba(46, 107, 79, 0.3)',
+                    margin: '0 auto 16px',
+                    boxShadow: '0 8px 24px rgba(46, 107, 79, 0.25)',
                   }}
                 >
-                  <Sparkles size={40} />
+                  <Sparkles size={36} />
                 </div>
 
-                <h2 className="section-title" style={{ fontSize: '2.4rem', marginBottom: '10px' }}>
+                <h2 className="section-title" style={{ fontSize: '2.2rem', marginBottom: '8px' }}>
                   Thank You, Truly!
                 </h2>
 
-                <p style={{ fontSize: '1.1rem', color: '#4A443D', maxWidth: '480px', margin: '0 auto 16px', lineHeight: '1.6' }}>
-                  Your gift of <strong style={{ color: 'var(--primary-red)' }}>₹{effectiveAmount.toLocaleString()}</strong> is now on its way to empowering communities across Manipur.
+                <p style={{ fontSize: '1.05rem', color: '#4A443D', maxWidth: '480px', margin: '0 auto 20px', lineHeight: '1.5' }}>
+                  Your contribution of <strong style={{ color: 'var(--primary-red)' }}>₹{effectiveAmount.toLocaleString()}</strong> has been submitted to support community programs in Manipur.
                 </p>
 
-                <p style={{ fontSize: '0.88rem', color: '#8A7060', marginBottom: '32px' }}>
-                  Once our team verifies the UTR, your official <strong>80G Tax Exemption Receipt</strong> will be emailed directly to your inbox.
-                </p>
+                {/* On-Screen Receipt Card */}
+                <div
+                  style={{
+                    backgroundColor: '#FAF6EF',
+                    border: '1px solid #EAE2D5',
+                    borderRadius: '12px',
+                    padding: '20px 24px',
+                    maxWidth: '440px',
+                    margin: '0 auto 24px',
+                    textAlign: 'left',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #EAE2D5', paddingBottom: '10px', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', color: '#8A7060' }}>
+                      Submission Confirmation
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#2E6B4F', fontWeight: 'bold', backgroundColor: '#E2F0EA', padding: '2px 8px', borderRadius: '4px' }}>
+                      Received
+                    </span>
+                  </div>
 
-                <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
-                  <button className="btn-primary" onClick={() => setActivePage('home')}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8A7060' }}>Donor Name:</span>
+                      <strong style={{ color: '#1A1816' }}>{auditForm.name || 'Anonymous Donor'}</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8A7060' }}>Amount:</span>
+                      <strong style={{ color: 'var(--primary-red)', fontSize: '1rem' }}>₹{effectiveAmount.toLocaleString()}</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8A7060' }}>UTR Reference:</span>
+                      <strong style={{ color: '#1A1816', letterSpacing: '1px' }}>{auditForm.utr || '—'}</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8A7060' }}>Date:</span>
+                      <span style={{ color: '#1A1816', fontWeight: '600' }}>{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ borderTop: '1px dashed #D4C4B0', marginTop: '12px', paddingTop: '10px' }}>
+                    <p style={{ fontSize: '0.72rem', color: '#8A7060', lineHeight: '1.45', margin: 0 }}>
+                      ℹ️ <strong>Note:</strong> Edge Life is a registered public trust. For official tax receipts or certificate queries, please contact the NGO directly at <strong>edgelifemanipur05@gmail.com</strong> or <strong>+91 9436231759</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className="btn-outline-gold"
+                    style={{ color: 'var(--text-dark)', borderColor: '#D4C4B0', padding: '10px 18px', fontSize: '0.85rem' }}
+                    onClick={() => window.print()}
+                  >
+                    🖨️ Print Confirmation
+                  </button>
+                  <button className="btn-primary" style={{ padding: '10px 20px', fontSize: '0.85rem' }} onClick={() => setActivePage('home')}>
                     Return Home
                   </button>
-                  <button className="btn-outline-gold" style={{ color: 'var(--text-dark)', borderColor: '#D4C4B0' }} onClick={() => setActivePage('projects')}>
-                    See Projects You're Funding
+                  <button className="btn-outline-gold" style={{ color: 'var(--text-dark)', borderColor: '#D4C4B0', padding: '10px 18px', fontSize: '0.85rem' }} onClick={() => setActivePage('projects')}>
+                    View Projects
                   </button>
                 </div>
               </div>
@@ -715,10 +765,10 @@ export default function Donate({ setActivePage }) {
           {/* TRUST BADGES FOOTNOTE */}
           {step < 4 && (
             <div className="trust-badges-grid">
-              <div className="trust-badge-card">🔒 Secure UPI Payment</div>
-              <div className="trust-badge-card">📄 80G Tax Receipt</div>
-              <div className="trust-badge-card">✅ FCRA Compliant</div>
-              <div className="trust-badge-card">📊 Transparent Audit</div>
+              <div className="trust-badge-card">🔒 Direct Bank &amp; UPI Transfer</div>
+              <div className="trust-badge-card">🏛️ Registered Public Trust</div>
+              <div className="trust-badge-card">✨ 100% Community Impact</div>
+              <div className="trust-badge-card">📊 Transparent Operations</div>
             </div>
           )}
         </div>

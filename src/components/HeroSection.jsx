@@ -90,7 +90,7 @@ export default function HeroSection({ setActivePage }) {
             </div>
 
             {/* RIGHT: Floating Donation Card */}
-            <div className="hero-floating-card-box anim-bounce-in anim-delay-6">
+            <div className="hero-floating-card-box">
               <div className="hero-floating-icon">
                 <Heart size={18} className="heart-icon" />
               </div>

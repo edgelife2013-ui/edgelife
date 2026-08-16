@@ -2584,6 +2584,8 @@ button {
   border-radius: 12px;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
   z-index: 20;
+  animation: animBobFloat 3.8s ease-in-out infinite;
+  will-change: transform, box-shadow;
 }
 
 .hero-floating-icon {
@@ -2749,9 +2751,11 @@ button {
 @keyframes animBobFloat {
   0%, 100% {
     transform: translateY(-50%) translateY(0px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
   }
   50% {
-    transform: translateY(-50%) translateY(-10px);
+    transform: translateY(-50%) translateY(-14px);
+    box-shadow: 0 24px 44px rgba(0, 0, 0, 0.16);
   }
 }
 
@@ -2780,10 +2784,17 @@ button {
     width: 100%;
     max-width: 280px;
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+    animation: animBobFloatMobile 3.8s ease-in-out infinite;
   }
-  @keyframes animBobFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+  @keyframes animBobFloatMobile {
+    0%, 100% {
+      transform: translateY(0px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+      transform: translateY(-10px);
+      box-shadow: 0 22px 38px rgba(0, 0, 0, 0.14);
+    }
   }
 }
 

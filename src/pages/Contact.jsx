@@ -145,17 +145,6 @@ export default function Contact({ setActivePage }) {
                   <p>Sunday: Closed</p>
                 </div>
               </div>
-
-              {/* Connect with us */}
-              <div style={{ marginTop: '10px' }}>
-                <span className="form-label" style={{ display: 'block', marginBottom: '12px' }}>Connect with us</span>
-                <div className="social-icons-row">
-                  <button className="social-btn" style={{ borderColor: '#E5DDCF', color: '#3A352F' }}>FB</button>
-                  <button className="social-btn" style={{ borderColor: '#E5DDCF', color: '#3A352F' }}>TW</button>
-                  <button className="social-btn" style={{ borderColor: '#E5DDCF', color: '#3A352F' }}>IG</button>
-                  <button className="social-btn" style={{ borderColor: '#E5DDCF', color: '#3A352F' }}>YT</button>
-                </div>
-              </div>
             </div>
 
             {/* Right Column: Send us a Message */}
@@ -163,7 +152,7 @@ export default function Contact({ setActivePage }) {
               <div>
                 <h3 className="section-title" style={{ fontSize: '1.8rem', marginBottom: '6px' }}>Send us a Message</h3>
                 <p className="section-subtitle" style={{ fontSize: '0.88rem' }}>
-                  Fill out the form below and we'll respond within 24 hours.
+                  Fill out the form below.
                 </p>
               </div>
 

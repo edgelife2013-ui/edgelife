@@ -37,15 +37,14 @@ export default function PrivacyPolicy({ setActivePage }) {
             </p>
             <ul style={{ paddingLeft: '20px', marginTop: '8px' }}>
               <li>We export and log the submitted transaction information (UTR, Name, Amount, Screenshot) into our secure Google Sheets database.</li>
-              <li>We manually match this log against our official State Bank of India merchant bank account statement to verify that the funds have been successfully received.</li>
-              <li>Official stamped 80G tax exemption receipts must be requested by the donor by emailing us directly at <strong>edgelifemanipur05@gmail.com</strong>. We will manually compile and email the certificate upon request once verification succeeds.</li>
+              <li>Donation acknowledgment receipts can be requested by emailing us directly at <strong>edgelifemanipur05@gmail.com</strong>. Our team will verify and email the receipt upon request.</li>
             </ul>
           </section>
 
           <section>
             <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#1A1816', marginBottom: '12px' }}>3. Data Security and Retention</h2>
             <p>
-              Your security is paramount. All communication between your browser and our website is encrypted using SSL/TLS protocols. We retain your transaction record on our Google Sheets ledger solely for accounting, tax auditing, and 80G exemption receipt reference as required by Indian law.
+              Your security is paramount. All communication between your browser and our website is encrypted using SSL/TLS protocols. We retain transaction records solely for internal NGO accounting and verification references.
             </p>
           </section>
 

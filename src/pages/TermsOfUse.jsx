@@ -33,9 +33,9 @@ export default function TermsOfUse({ setActivePage }) {
           </section>
 
           <section>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#1A1816', marginBottom: '12px' }}>3. 80G Tax Exemption Certificates</h2>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#1A1816', marginBottom: '12px' }}>3. Donation Receipts and Inquiries</h2>
             <p>
-              Edge Life is a registered trust eligible for 80G tax deduction. Donors who require an official stamped 80G tax exemption certificate must email their request and transaction details directly to <strong>edgelifemanipur05@gmail.com</strong>. Stamped tax receipts are not generated automatically. We are not responsible for delays or failure to claim deductions due to incorrect personal details (PAN, name, email) provided by the donor.
+              Edge Life is a registered public trust. Donors who require a formal donation receipt or acknowledgment certificate must email their transaction details and request directly to <strong>edgelifemanipur05@gmail.com</strong>. Automated tax receipts are not generated on the website. Official receipts are issued manually following verification with our bank records.
             </p>
           </section>
 
