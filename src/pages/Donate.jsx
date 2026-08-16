@@ -486,6 +486,7 @@ export default function Donate({ setActivePage }) {
                             3. Enter <strong>₹{effectiveAmount}</strong> with note <em>"Donation for Edge Life"</em> and note your 12-digit UTR.
                           </p>
 
+
                           <button
                             type="button"
                             onClick={() => handleCopyText(upiId, 'upi-btn-bottom')}
