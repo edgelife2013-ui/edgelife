@@ -27,8 +27,8 @@ export default function Contact({ setActivePage }) {
     setFormStatus({ submitting: true, success: false, error: '' });
 
     try {
-      // Post to FormSubmit free API for direct email forwarding to edgelifemanipur05@gmail.com
-      const response = await fetch('https://formsubmit.co/ajax/edgelifemanipur05@gmail.com', {
+      // Post to FormSubmit free API using verified token
+      const response = await fetch('https://formsubmit.co/ajax/18a8e0910ee387ed3104021d5d3e0909', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

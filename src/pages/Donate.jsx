@@ -164,6 +164,7 @@ export default function Donate({ setActivePage }) {
       formDataObj.append('utr', auditForm.utr);
       formDataObj.append('amount', `₹${effectiveAmount}`);
       formDataObj.append('purpose', 'Donation for Edge Life');
+      formDataObj.append('_subject', `New Donation Verification Request - ₹${effectiveAmount} (UTR: ${auditForm.utr})`);
       formDataObj.append('_honey', auditForm._honey || '');
       formDataObj.append('_autoresponder', "Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life");
 
@@ -171,9 +172,12 @@ export default function Donate({ setActivePage }) {
         formDataObj.append('attachment', screenshotFile);
       }
 
-      // Post to FormSubmit free API for direct email forwarding to edgelifemanipur05@gmail.com
-      await fetch('https://formsubmit.co/ajax/edgelifemanipur05@gmail.com', {
+      // Post to FormSubmit free API using verified token
+      await fetch('https://formsubmit.co/ajax/18a8e0910ee387ed3104021d5d3e0909', {
         method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
         body: formDataObj,
       });
     } catch (err) {
