@@ -37,7 +37,7 @@ export default function HeroSection({ setActivePage }) {
               <div className="hero-tag-row anim-slide-left anim-delay-2">
                 <div className="accent-line"></div>
                 <span className="hero-tag-text">
-                  Edge Life · A trust to build a value world..
+                  Edge Life · A trust to build a value world.
                 </span>
               </div>
 

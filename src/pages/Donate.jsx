@@ -255,15 +255,19 @@ export default function Donate({ setActivePage }) {
                 {/* Impact Preview */}
                 {canProceed && (
                   <div className="impact-preview-banner">
-                    ✨ <strong>₹{effectiveAmount.toLocaleString()}</strong> can fund{' '}
-                    <span>
-                      {effectiveAmount >= 5000
-                        ? 'a full month of scholarship tuition for a student'
-                        : effectiveAmount >= 2500
-                          ? 'materials for 5 women weaving skill sessions'
-                          : effectiveAmount >= 1000
-                            ? 'a mobile medical clinic camp in a remote village'
-                            : 'a school stationery kit for a child'}
+                    ✨ <strong>₹{effectiveAmount.toLocaleString()}</strong> can help fund{' '}
+                    <span style={{ fontWeight: '600', color: 'var(--primary-red)' }}>
+                      {effectiveAmount >= 10000
+                        ? 'vital medical camp supplies and comprehensive community relief programs'
+                        : effectiveAmount >= 5000
+                          ? 'essential healthcare kits and educational books & study materials'
+                          : effectiveAmount >= 2500
+                            ? 'skill development training and livelihood materials for women artisans'
+                            : effectiveAmount >= 1000
+                              ? 'basic health checkup supplies and essential nutrition packages'
+                              : effectiveAmount >= 500
+                                ? 'learning stationery, notebooks, and essential aid kits'
+                                : 'meaningful grassroots relief work and community outreach'}
                     </span>
                   </div>
                 )}
@@ -955,7 +959,7 @@ export default function Donate({ setActivePage }) {
           </div>
 
           <div className="footer-bottom-bar">
-            <span>© 2025 Edge Life. A trust to build a value world.. All rights reserved.</span>
+            <span>© 2026 Edge Life. A trust to build a value world.. All rights reserved.</span>
             <div className="footer-bottom-links">
               <a href="#privacy">Privacy Policy</a>
               <a href="#terms">Terms of Use</a>

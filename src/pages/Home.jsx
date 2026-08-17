@@ -68,7 +68,7 @@ export default function Home({ setActivePage }) {
 
             {/* Right Text Content */}
             <div className="about-content-right">
-              <h2 className="section-title">A trust to build a value world..</h2>
+              <h2 className="section-title">A trust to build a value world.</h2>
 
               <div className="about-paragraphs">
                 <p>
@@ -281,7 +281,7 @@ export default function Home({ setActivePage }) {
                 </div>
               </div>
               <p className="footer-brand-desc">
-                A trust to build a value world.. Empowering communities across Manipur through healthcare, hygiene, and women livelihood programs since 2013.
+                A trust to build a value world. Empowering communities across Manipur through healthcare, hygiene, and women livelihood programs since 2013.
               </p>
 
             </div>
@@ -324,7 +324,7 @@ export default function Home({ setActivePage }) {
           </div>
 
           <div className="footer-bottom-bar">
-            <span>© 2025 Edge Life. A trust to build a value world.. All rights reserved.</span>
+            <span>© 2026 Edge Life. A trust to build a value world. All rights reserved.</span>
             <div className="footer-bottom-links">
               <a href="#privacy">Privacy Policy</a>
               <a href="#terms">Terms of Use</a>

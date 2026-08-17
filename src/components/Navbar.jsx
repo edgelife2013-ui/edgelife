@@ -24,7 +24,7 @@ export default function Navbar({ activePage, setActivePage }) {
           <div className="brand-badge">E</div>
           <div className="brand-text">
             <span className="brand-title">Edge Life</span>
-            <span className="brand-subtitle">A trust to build a value world..</span>
+            <span className="brand-subtitle">A trust to build a value world.</span>
           </div>
         </div>
 
