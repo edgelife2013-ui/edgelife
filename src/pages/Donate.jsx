@@ -165,53 +165,12 @@ export default function Donate({ setActivePage }) {
     return Object.keys(errors).length === 0;
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const formDataObj = new FormData();
-      formDataObj.append('name', auditForm.name);
-      formDataObj.append('email', auditForm.email);
-      formDataObj.append('phone', auditForm.phone);
-      formDataObj.append('utr', auditForm.utr);
-      formDataObj.append('amount', `₹${effectiveAmount}`);
-      formDataObj.append('purpose', 'Donation for Edge Life');
-      formDataObj.append('_subject', `New Donation Verification Request - ₹${effectiveAmount} (UTR: ${auditForm.utr})`);
-      formDataObj.append('message', auditForm.message || 'Donation for Edge Life');
-      formDataObj.append('_honey', auditForm._honey || '');
-      formDataObj.append('_autoresponder', "Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life");
-
-      if (screenshotFile) {
-        formDataObj.append('attachment', screenshotFile);
-      }
-
-      const response = await fetch('https://formsubmit.co/ajax/18a8e0910ee387ed3104021d5d3e0909', {
-        method: 'POST',
-        body: formDataObj,
-      });
-
-      const data = await response.json();
-      if (response.ok || data.success === 'true' || data.success === true) {
-        setStep(4);
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 4500);
-      } else {
-        // Even if FormSubmit rate-limits or returns message, proceed to receipt
-        setStep(4);
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 4500);
-      }
-    } catch (err) {
-      console.error('Submission error:', err);
-      setStep(4);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 4500);
-    } finally {
-      setIsSubmitting(false);
+  const handleFormSubmit = (e) => {
+    if (!validateForm()) {
+      e.preventDefault();
+      return false;
     }
+    setIsSubmitting(true);
   };
 
   return (
@@ -657,9 +616,13 @@ export default function Donate({ setActivePage }) {
                 </p>
 
                 <form
+                  action="https://formsubmit.co/18a8e0910ee387ed3104021d5d3e0909"
+                  method="POST"
+                  encType="multipart/form-data"
                   onSubmit={handleFormSubmit}
                   style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
                 >
+                  <input type="hidden" name="_next" value={typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}#donate-success` : ''} />
                   <input type="hidden" name="_captcha" value="false" />
                   <input type="hidden" name="_subject" value={`New Donation Verification Request - ₹${effectiveAmount} (UTR: ${auditForm.utr})`} />
                   <input type="hidden" name="amount" value={`₹${effectiveAmount}`} />
