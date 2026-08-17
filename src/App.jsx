@@ -11,7 +11,8 @@ import TermsOfUse from './pages/TermsOfUse';
 
 export default function App() {
   const [activePage, setActivePage] = useState(() => {
-    const hash = window.location.hash.substring(1);
+    const rawHash = window.location.hash.substring(1).split('?')[0];
+    const hash = rawHash === 'donate-success' ? 'donate' : rawHash;
     const validPages = ['home', 'about', 'projects', 'gallery', 'contact', 'donate', 'privacy', 'terms'];
     return validPages.includes(hash) ? hash : 'home';
   });
@@ -19,7 +20,8 @@ export default function App() {
   // Sync state with browser Back/Forward navigation
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.substring(1);
+      const rawHash = window.location.hash.substring(1).split('?')[0];
+      const hash = rawHash === 'donate-success' ? 'donate' : rawHash;
       const validPages = ['home', 'about', 'projects', 'gallery', 'contact', 'donate', 'privacy', 'terms'];
       const targetPage = validPages.includes(hash) ? hash : 'home';
       setActivePage(targetPage);
