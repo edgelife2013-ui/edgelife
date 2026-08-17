@@ -150,40 +150,15 @@ export default function Donate({ setActivePage }) {
     return Object.keys(errors).length === 0;
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  const handleFormSubmit = (e) => {
+    if (!validateForm()) {
+      e.preventDefault();
+      return;
+    }
 
     setIsSubmitting(true);
 
-    try {
-      const formDataObj = new FormData();
-      formDataObj.append('name', auditForm.name);
-      formDataObj.append('email', auditForm.email);
-      formDataObj.append('phone', auditForm.phone);
-      formDataObj.append('utr', auditForm.utr);
-      formDataObj.append('amount', `₹${effectiveAmount}`);
-      formDataObj.append('purpose', 'Donation for Edge Life');
-      formDataObj.append('_subject', `New Donation Verification Request - ₹${effectiveAmount} (UTR: ${auditForm.utr})`);
-      formDataObj.append('_honey', auditForm._honey || '');
-      formDataObj.append('_autoresponder', "Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life");
-
-      if (screenshotFile) {
-        formDataObj.append('attachment', screenshotFile);
-      }
-
-      // Post to FormSubmit free API using verified token
-      await fetch('https://formsubmit.co/ajax/18a8e0910ee387ed3104021d5d3e0909', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-        body: formDataObj,
-      });
-    } catch (err) {
-      // Fallback
-    }
-
+    // Let the native form submit via target="formsubmit_iframe" so FormSubmit captures the attachment file
     setTimeout(() => {
       setIsSubmitting(false);
       setShowConfetti(true);
@@ -630,7 +605,24 @@ export default function Donate({ setActivePage }) {
                   Enter your UTR transaction number and upload a payment screenshot to verify your donation of <strong>₹{effectiveAmount.toLocaleString()}</strong>. Contact us at edgelifemanipur05@gmail.com for receipt details.
                 </p>
 
-                <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {/* Hidden iframe to receive native multipart form submission without page reload */}
+                <iframe name="formsubmit_iframe" id="formsubmit_iframe" style={{ display: 'none' }}></iframe>
+
+                <form
+                  action="https://formsubmit.co/18a8e0910ee387ed3104021d5d3e0909"
+                  method="POST"
+                  encType="multipart/form-data"
+                  target="formsubmit_iframe"
+                  onSubmit={handleFormSubmit}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+                >
+                  {/* FormSubmit Configuration Fields */}
+                  <input type="hidden" name="_captcha" value="false" />
+                  <input type="hidden" name="_subject" value={`New Donation Verification Request - ₹${effectiveAmount} (UTR: ${auditForm.utr})`} />
+                  <input type="hidden" name="amount" value={`₹${effectiveAmount}`} />
+                  <input type="hidden" name="purpose" value="Donation for Edge Life" />
+                  <input type="hidden" name="_autoresponder" value="Thank you for your generous contribution to Edge Life. We have received your payment submission details. Edge Life is a registered public trust. If you require a formal donation receipt or have any queries, please contact the NGO directly at edgelifemanipur05@gmail.com or +91 9436231759. Thank you for supporting our community programs in Manipur! - Edge Life" />
+
                   {/* Honeypot Spam Protection */}
                   <input
                     type="text"
@@ -646,6 +638,8 @@ export default function Donate({ setActivePage }) {
                       <label className="form-label">Full Name *</label>
                       <input
                         type="text"
+                        name="name"
+                        required
                         placeholder="Your full name"
                         className="form-input"
                         value={auditForm.name}
@@ -659,6 +653,8 @@ export default function Donate({ setActivePage }) {
                       <label className="form-label">Email Address *</label>
                       <input
                         type="email"
+                        name="email"
+                        required
                         placeholder="you@example.com"
                         className="form-input"
                         value={auditForm.email}
@@ -672,6 +668,8 @@ export default function Donate({ setActivePage }) {
                       <label className="form-label">Mobile Number *</label>
                       <input
                         type="tel"
+                        name="phone"
+                        required
                         placeholder="10-digit mobile number"
                         className="form-input"
                         value={auditForm.phone}
@@ -687,6 +685,8 @@ export default function Donate({ setActivePage }) {
                       </label>
                       <input
                         type="text"
+                        name="utr"
+                        required
                         maxLength={12}
                         placeholder="e.g. 423156789012"
                         className="form-input"
@@ -706,6 +706,7 @@ export default function Donate({ setActivePage }) {
 
                       <input
                         type="file"
+                        name="attachment"
                         id="payment-screenshot-input"
                         accept="image/*"
                         style={{ display: 'none' }}
@@ -723,6 +724,8 @@ export default function Donate({ setActivePage }) {
                               onClick={(e) => {
                                 e.preventDefault();
                                 setScreenshotFile(null);
+                                const fileInput = document.getElementById('payment-screenshot-input');
+                                if (fileInput) fileInput.value = '';
                               }}
                               style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#C83E2B', fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline', fontWeight: 'bold' }}
                             >
@@ -746,6 +749,7 @@ export default function Donate({ setActivePage }) {
                   <div className="form-field-group form-span-full">
                     <label className="form-label">Message (Optional)</label>
                     <textarea
+                      name="message"
                       placeholder="A note for our NGO team — dedications, feedback, or greetings!"
                       className="form-textarea"
                       style={{ minHeight: '70px' }}
